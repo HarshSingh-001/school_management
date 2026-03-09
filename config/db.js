@@ -1,14 +1,13 @@
 import mysql from "mysql2";
 import "dotenv/config";
 
-
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: process.env.DB_PASSWORD,
-  database: "school_management"
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT
 });
-
 
 db.connect((err) => {
   if (err) {
