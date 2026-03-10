@@ -11,22 +11,34 @@ const addSchool = (req, res) => {
     });
   }
 
-  const query = `
-    INSERT INTO schools (name, address, latitude, longitude)
-    VALUES (?, ?, ?, ?)
-  `;
+  const checkQuery = "SELECT * FROM schools WHERE name=? AND address=?";
 
-  db.query(query, [name, address, latitude, longitude], (err, result) => {
+  db.query(checkQuery, [name, address], (err, result) => {
 
-    if (err) {
-      return res.status(500).json({
-        error: err.message
+    if (result.length > 0) {
+      return res.status(400).json({
+        message: "School already exists"
       });
     }
 
-    res.status(201).json({
-      message: "School added successfully",
-      id: result.insertId
+    const insertQuery = `
+      INSERT INTO schools (name, address, latitude, longitude)
+      VALUES (?, ?, ?, ?)
+    `;
+
+    db.query(insertQuery, [name, address, latitude, longitude], (err, result) => {
+
+      if (err) {
+        return res.status(500).json({
+          error: err.message
+        });
+      }
+
+      res.status(201).json({
+        message: "School added successfully",
+        id: result.insertId
+      });
+
     });
 
   });
